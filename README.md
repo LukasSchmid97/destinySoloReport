@@ -4,7 +4,7 @@ A Webapp using React and React-Router, currently hosted on [elevatorbot.ch](http
 
 ## Roadmap
 
-Further down the line, I want to use the local database to make arbitrary rankings of speed, low% etc to give players a feeling of pride and accomplishment.
+- Make arbitrary rankings of speed, low% etc to give players a feeling of pride and accomplishment.
 - Improve general design. Add website logo.
 - Make the login button work
 - Detect 'fake' raids e.g. less than 20 kills
