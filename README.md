@@ -1,6 +1,6 @@
 # Destiny Solo Report
 
-A Webapp using React and React-Router, currently hosted on [elevatorbot.ch](https://elevatorbot.ch/soloreport)
+A Webapp using React and React-Router, currently hosted on [elevatorbot.ch](https://elevatorbot.ch/soloreport/3/4611686018484825875)
 
 ## Roadmap
 
