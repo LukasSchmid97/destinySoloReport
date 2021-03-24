@@ -2,26 +2,65 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.profile {
+  top: 1em;
+  right: 1em;
+  text-align: center;
+  width: 120px;
+  margin-top: 10px;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.accordions {
+  display:flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+
+.MuiAccordion-root {
+  min-width:70%;
+  max-width: 80%;
+}
+
+@media only screen and (max-width: 600px) {
+  .MuiAccordion-root {
+    min-width:80%;
+  }
+}
+
+.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column{
+  flex-wrap: nowrap;
+}
+
+.MuiGrid-root.MuiGrid-container div .MuiGrid-container{
+  background-color: #d2def5;
+  border-radius: 16px;
+  margin-bottom: 5px;
+}
+
+.MuiGrid-root.MuiGrid-container div .MuiGrid-container.flawless{
+  background-color: #e9f79c;
+  border-radius: 16px;
+  margin-bottom: 5px;
 }
 
 .App-link {

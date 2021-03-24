@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
+    <base href="%PUBLIC_URL%/"/>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
