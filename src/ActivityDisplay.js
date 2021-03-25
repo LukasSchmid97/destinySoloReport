@@ -1,5 +1,8 @@
 import React from 'react'
+
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {useParams} from "react-router-dom"
 
@@ -44,6 +47,8 @@ function ActivityDisplay(props){
             //because activity might have timed out
             eligible &= game['values']['completionReason']['basic']['value'] === 0
         }
+        
+        eligible &= game['values']['kills']['basic']['value'] > 0
 
         return eligible
     })
@@ -52,7 +57,7 @@ function ActivityDisplay(props){
         let unixTime = Date.parse(datestring)
         let d = new Date()
         d.setTime(unixTime)
-        return d.toDateString()
+        return d.toLocaleDateString("en-GB")
     }
 
     let getActivityName = (game) => {
@@ -68,7 +73,7 @@ function ActivityDisplay(props){
 
     let getPlayerCount = (game) => {
         if(pgcrdata[game['activityDetails']['instanceId']] === undefined){
-            return "*spinning*"
+            return <CircularProgress size="1.2em" thickness={5} color='secondary'/>
         }
         let number = (new Set(pgcrdata[game['activityDetails']['instanceId']]['entries'].map(player => player['player']['destinyUserInfo']['membershipId']))).size 
         switch(number){
@@ -89,26 +94,30 @@ function ActivityDisplay(props){
         if(!instanceDetails){
             return null
         }
-        let players = instanceDetails['entries'].filter(player => player['player']['destinyUserInfo']['membershipId'] !== String(destinyid))
+        let players = instanceDetails['entries']
+            .filter(player => player['player']['destinyUserInfo']['membershipId'] !== String(destinyid))
+            .filter(player => player['values']['completed']['basic']['value'] === 1)
         return <div>
             {
                 players.map(player => <div>
-                    <a  target='_blank' 
+                    <Button  
+                        target='_blank' 
                         rel="noreferrer" 
+                        style={{
+                            backgroundColor: "#003c9c",
+                            marginTop: "2px"
+                        }}
                         href={"https://elevatorbot.ch/soloreport/" +
                             player['player']['destinyUserInfo']['membershipType'] + "/" + 
                             player['player']['destinyUserInfo']['membershipId']}>
-                        <img style={{height: "0.8em"}} src={'https://www.bungie.net' + player['player']['destinyUserInfo']['iconPath']} alt=''/> {player['player']['destinyUserInfo']['displayName']}
-                    </a>
+                        <img style={{height: "1.2em", marginRight: "0.3em"}} src={'https://www.bungie.net' + player['player']['destinyUserInfo']['iconPath']} alt=''/> {player['player']['destinyUserInfo']['displayName']}
+                    </Button>
                 </div>)
             }
         </div>
     }
 
-    //TODO return nightfall name for gms
     //TODO presage master/normal
-    //TODO flawless markers
-    //TODO number of people markers/done with
     return (
         <div>
             <h3>{props.sectionTitle}</h3>
@@ -116,22 +125,23 @@ function ActivityDisplay(props){
                 <Grid
                 container
                 direction="row"
-                justify="space-evenly"
+                justify="space-between"
                 alignItems="center"
                 key={game['activityDetails']['instanceId']}
                 className={game['values']['deaths']['basic']['value'] === 0 && activityType !== 'raid'?'flawless':'flawed'}
               >
-                    <Grid item xs={3}><a target="_blank" rel="noreferrer" href={`https://${activityType}.report/pgcr/` + game['activityDetails']['instanceId']}>{readableDate(game['period'])}</a></Grid> 
+                    <Grid item xs={2}>{readableDate(game['period'])}</Grid>
                     {activityType === 'grandmaster'? <Grid item xs={2}>{getActivityName(game)}</Grid>:null}
                     {activityType === 'raid'? 
                     <Grid item xs={2}>
                         <div>{getPlayerCount(game)}</div><label>{getPlayerBadgesOrSolo(game)}</label>
                     </Grid>
                     :null}
-                    <Grid item xs={3}><div className="entryValue">{game['values']['timePlayedSeconds']['basic']['displayValue']}</div><label>Time</label></Grid>
-                    <Grid item xs={1}><div className="entryValue">{game['values']['kills']['basic']['value']}</div><label>Kills</label></Grid>
-                    <Grid item xs={1}><div className="entryValue">{game['values']['deaths']['basic']['value']}</div><label>Deaths</label></Grid>
-                    <Grid item xs={2}><div className="entryValue">{game['values']['efficiency']['basic']['displayValue']}</div><label>K/D</label></Grid>
+                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['timePlayedSeconds']['basic']['displayValue']}</div><label>Time</label></Grid>
+                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['kills']['basic']['value']}</div><label>Kills</label></Grid>
+                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['deaths']['basic']['value']}</div><label>Deaths</label></Grid>
+                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['efficiency']['basic']['displayValue']}</div><label>K/D</label></Grid>
+                    <Grid item xs={2}><Button target="_blank" rel="noreferrer" className={activityType} href={`https://${activityType}.report/pgcr/` + game['activityDetails']['instanceId']}>{activityType}.report</Button></Grid>
                 </Grid>
             ))}
         </div>
