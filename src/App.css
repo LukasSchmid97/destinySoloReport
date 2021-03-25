@@ -1,5 +1,28 @@
-.App {
+html {
   text-align: center;
+}s
+
+
+@media (prefers-color-scheme: dark) {
+  img {
+    opacity: .75;
+    transition: opacity .5s ease-in-out;
+  }
+  img:hover {
+    opacity: 1;
+  }
+}
+
+html {
+  color: #8cabd9;
+  background-color: #272c34;
+}
+
+html[data-theme='dark'] {
+  --text-color-normal: hsl(210, 10%, 62%);
+  --text-color-light: hsl(210, 15%, 35%);
+  --text-color-richer: hsl(210, 50%, 72%);
+  --text-color-highlight: hsl(25, 70%, 45%);
 }
 
 .App-header {
@@ -20,7 +43,7 @@
 
 .profile {
   top: 1em;
-  right: 1em;
+  left: 1em;
   text-align: center;
   width: 120px;
   margin-top: 10px;
@@ -32,8 +55,9 @@
   display:flex;
   align-items: center;
   flex-direction: column;
+  /*margin-top: 10%;*/
+  margin-bottom: 100px;
 }
-
 
 
 .MuiAccordion-root {
@@ -52,13 +76,28 @@
 }
 
 .MuiGrid-root.MuiGrid-container div .MuiGrid-container{
-  background-color: #d2def5;
+  background-color: #00469c;
   border-radius: 16px;
   margin-bottom: 5px;
 }
 
+
+
+a.raid {
+  background-color: #4db6ac;
+}
+
+a.dungeon {
+  background-color: #03a9f4;
+}
+
+a.grandmaster {
+  background-color: #617279fb;
+  margin-left: -50%;
+}
+
 .MuiGrid-root.MuiGrid-container div .MuiGrid-container.flawless{
-  background-color: #e9f79c;
+  background-color: #c49000;
   border-radius: 16px;
   margin-bottom: 5px;
 }
@@ -67,11 +106,8 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+@media (max-width: 767px) {
+  .hidden-mobile {
+    display: none;
   }
 }

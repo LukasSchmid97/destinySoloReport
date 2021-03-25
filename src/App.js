@@ -9,17 +9,21 @@ import {
   AccordionSummary,
   AccordionDetails,
   Grid,
+  createMuiTheme,
+  ThemeProvider
 } from "@material-ui/core"
+
 import Typography from "@material-ui/core/Typography"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 
 import React, { useState, useEffect } from "react"
 
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   useParams,
+  useLocation,
+  useHistory
 } from "react-router-dom"
 import { createBrowserHistory } from 'history';
 
@@ -29,16 +33,66 @@ export const history = createBrowserHistory({
 
 const apiRoot = "https://www.bungie.net/Platform"
 
+const darkTheme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+});
+
 function getHeader() {
   return { "X-API-Key": "f17e9079050f49cf8bd50a6893293fcd" }
 }
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function App() {
+  let history = useHistory()
+
+  let query = useQuery();
+  let bungieCode = query.get('code')
+
+  if(!!bungieCode){
+    fetch("https://www.bungie.net/Platform/App/OAuth/Token/",
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `grant_type=authorization_code&code=${bungieCode}&client_id=35973`
+    }).then(
+      data => data.json()
+    ).then(
+      authResponse =>
+      fetch("https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/",
+      {
+        'method':'GET',
+        headers: { 
+          'X-API-Key': '20cd436d810c4305af4278b6b3b84a6b',
+          'Authorization': `Bearer ${authResponse['access_token']}`
+        },
+      }).then(
+        data => data.json()
+      ).then(
+        data => {
+          let memberships = data['Response']['destinyMemberships']
+          let main = memberships.find(membership => membership['membershipId'] === data['Response']['primaryMembershipId'])
+          document.cookie = JSON.stringify({ 
+            'name': main['displayName'],
+            'system': main['membershipType'],
+            'destinyid': main['membershipId'],
+            'img': main['iconPath']
+          })
+          history.push(`/soloreport/${main['membershipType']}/${main['membershipId']}`)
+        }
+      )
+    )
+  }
+
   return (
-    <Router>
+    <ThemeProvider theme={darkTheme}>
       <div className="App">
         <header className="App-header"></header>
-        <ButtonAppBar />
+        <ButtonAppBar/>
         <Switch>
           <Route
             path="/soloreport/:system/:destinyid"
@@ -48,13 +102,14 @@ function App() {
           />
         </Switch>
       </div>
-    </Router>
+    </ThemeProvider>
   )
 }
 
 function InfoPage() {
   // We can use the `useParams` hook here to access
   // the dynamic pieces of the URL.
+  
   let {system, destinyid } = useParams()
 
   const [accountinfo, setAccountinfo] = useState({
@@ -162,7 +217,6 @@ function InfoPage() {
     basePage,
     parallels
   ) {
-    console.log(`starting at ${basePage}`)
     const historyPerCharURL = `/Destiny2/${systemid}/Account/${destinyid}/Character/${charid}/Stats/Activities/?mode=7&count=250&page=`
     Promise.all(
       parallels.map((curPage) =>
@@ -199,8 +253,6 @@ function InfoPage() {
             parallels
           )
         } else {
-          console.log("done loading activities")
-          setLoadingActivities(false)
           setPastGames((state, _) => {
             let orderedState = state.sort(
               (a, b) => Date.parse(b["period"]) - Date.parse(a["period"])
@@ -208,6 +260,7 @@ function InfoPage() {
             return [...new Set(orderedState)]
           })
           //only keep unique activities
+          setLoadingActivities(false)
         }
       })
   }
@@ -292,14 +345,12 @@ function InfoPage() {
       })
     }
   })
-
   return (
     <div>
       <ProfileInfoCard
         loadingProfile={loadingprofile}
         accountinfo={accountinfo}
       />
-      {loadingActivities ? <label>Loading...</label> : null}
       <div className="accordions">
         <Accordion>
           <AccordionSummary
@@ -329,11 +380,49 @@ function InfoPage() {
               />
               <ActivityDisplay
                 activityList={pastGames}
-                sectionTitle="Shattered Throne"
+                sectionTitle="Prophecy"
                 type="dungeon"
                 filterBy={["playerCount"]}
                 playerCount={1}
                 hashes={[4148187374, 1077850348]}
+              />
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Story Missions</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container direction="column">
+              <ActivityDisplay
+                activityList={pastGames}
+                sectionTitle="Presage"
+                type="dungeon"
+                filterBy={["playerCount", "completionReason"]}
+                playerCount={1}
+                hashes={[2124066889]}
+              />
+              <ActivityDisplay
+                activityList={pastGames}
+                sectionTitle="Presage: Master"
+                type="dungeon"
+                filterBy={["playerCount", "completionReason"]}
+                playerCount={1}
+                hashes={[4212753278]}
+              />
+              <ActivityDisplay
+                activityList={pastGames}
+                sectionTitle="Harbinger"
+                type="dungeon"
+                filterBy={["playerCount", "completionReason"]}
+                playerCount={1}
+                hashes={[1738383283]}
               />
             </Grid>
           </AccordionDetails>
@@ -357,36 +446,6 @@ function InfoPage() {
                 playerCount={1}
                 hashes={gmkeys}
                 activityDefinition={destinyActivityDefinition}
-              />
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Story Missions</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Grid container direction="column">
-              <ActivityDisplay
-                activityList={pastGames}
-                sectionTitle="Presage"
-                type="dungeon"
-                filterBy={["playerCount", "completionReason"]}
-                playerCount={1}
-                hashes={[2124066889, 4212753278]}
-              />
-              <ActivityDisplay
-                activityList={pastGames}
-                sectionTitle="Harbinger"
-                type="dungeon"
-                filterBy={["playerCount", "completionReason"]}
-                playerCount={1}
-                hashes={[1738383283]}
               />
             </Grid>
           </AccordionDetails>

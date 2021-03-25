@@ -17,19 +17,26 @@ const useStyles = makeStyles((theme) => ({
 
 //TODO: login logic
 
-export default function ButtonAppBar() {
-  const classes = useStyles();
+export default function ButtonAppBar(props) {
+    const classes = useStyles();
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Destiny Solo Report
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+    let authedUser = JSON.parse(`${document.cookie}`)
+
+    return (
+        <div className={classes.root}>
+            <AppBar position="static">
+                <Toolbar>
+                <Typography variant="h6" className={classes.title}>
+                    Destiny Solo Report
+                </Typography>
+                {
+                    Object.keys(authedUser).includes('name')?
+                        <Button variant="contained" color='primary' href={`https://www.elevatorbot.ch/soloreport/${authedUser['system']}/${authedUser['destinyid']}`} ><img style={{height: "0.8em", marginRight: "0.3em"}} src={'https://www.bungie.net' + authedUser['img']} alt=''/>{authedUser['name']}</Button>
+                    :
+                        <Button color="inherit" href="https://www.bungie.net/en/OAuth/Authorize?client_id=35973&response_type=code">Login</Button>
+                }
+                </Toolbar>
+            </AppBar>
+        </div>
+    );
 }
