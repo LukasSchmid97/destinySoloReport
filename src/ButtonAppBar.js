@@ -17,10 +17,20 @@ const useStyles = makeStyles((theme) => ({
 
 //TODO: login logic
 
+function str_obj(str) {
+    str = str.split(', ');
+    var result = {};
+    for (var i = 0; i < str.length; i++) {
+        var cur = str[i].split('=');
+        result[cur[0]] = cur[1];
+    }
+    return result;
+}
+
 export default function ButtonAppBar(props) {
     const classes = useStyles();
 
-    let authedUser = JSON.parse(`${document.cookie}`)
+    let authedUser = str_obj(document.cookie)
 
     return (
         <div className={classes.root}>

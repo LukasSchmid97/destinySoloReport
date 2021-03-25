@@ -47,6 +47,23 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+function from_cookie(str) {
+  str = str.split(', ');
+  var result = {};
+  for (var i = 0; i < str.length; i++) {
+      var cur = str[i].split('=');
+      result[cur[0]] = cur[1];
+  }
+  return result;
+}
+
+function to_cookie(obj){
+  return Object.keys(obj).map(key => {
+    let val = obj[key]
+    return `${key}=${val}` //should probably escape this as those are usernames
+  }).join(', ')
+}
+
 function App() {
   let history = useHistory()
 
@@ -76,12 +93,16 @@ function App() {
         data => {
           let memberships = data['Response']['destinyMemberships']
           let main = memberships.find(membership => membership['membershipId'] === data['Response']['primaryMembershipId'])
-          document.cookie = JSON.stringify({ 
+          let cookie = from_cookie(document.cookie)
+          let newVals = { 
             'name': main['displayName'],
             'system': main['membershipType'],
             'destinyid': main['membershipId'],
             'img': main['iconPath']
-          })
+          }
+          Object.assign(cookie, newVals)
+          
+          document.cookie = to_cookie(cookie)
           history.push(`/soloreport/${main['membershipType']}/${main['membershipId']}`)
         }
       )
