@@ -78,11 +78,11 @@ function ActivityDisplay(props){
         let number = (new Set(pgcrdata[game['activityDetails']['instanceId']]['entries'].map(player => player['player']['destinyUserInfo']['membershipId']))).size 
         switch(number){
             case 1:
-                return 'Solo'
+                return <p>Solo</p>
             case 2:
-                return 'Duo with'
+                return <p className='hidden-mobile'>Duo with</p>
             case 3:
-                return 'Trio with'
+                return <p className='hidden-mobile'>Trio with</p>
             default:
                 return '*spinning*'
         }
@@ -130,18 +130,24 @@ function ActivityDisplay(props){
                 key={game['activityDetails']['instanceId']}
                 className={game['values']['deaths']['basic']['value'] === 0 && activityType !== 'raid'?'flawless':'flawed'}
               >
-                    <Grid item xs={2}>{readableDate(game['period'])}</Grid>
-                    {activityType === 'grandmaster'? <Grid item xs={2}>{getActivityName(game)}</Grid>:null}
+                    <Grid item xs={1}>{readableDate(game['period'])}</Grid>
+                    {activityType === 'grandmaster'? <Grid item xs={3}>{getActivityName(game)}</Grid>:null}
                     {activityType === 'raid'? 
                     <Grid item xs={2}>
                         <div>{getPlayerCount(game)}</div><label>{getPlayerBadgesOrSolo(game)}</label>
                     </Grid>
                     :null}
-                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['timePlayedSeconds']['basic']['displayValue']}</div><label>Time</label></Grid>
-                    <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['kills']['basic']['value']}</div><label>Kills</label></Grid>
+                    <Grid item xs={1.7}><div className="entryValue">{game['values']['timePlayedSeconds']['basic']['displayValue']}</div><label className="hidden-mobile">Time</label></Grid>
+                    <Grid item xs={1}><div className="entryValue">{game['values']['kills']['basic']['value']}</div><label>Kills</label></Grid>
                     <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['deaths']['basic']['value']}</div><label>Deaths</label></Grid>
                     <Grid item xs={1} className='hidden-mobile'><div className="entryValue">{game['values']['efficiency']['basic']['displayValue']}</div><label>K/D</label></Grid>
-                    <Grid item xs={2}><Button target="_blank" rel="noreferrer" className={activityType} href={`https://${activityType}.report/pgcr/` + game['activityDetails']['instanceId']}>{activityType}.report</Button></Grid>
+                    <Grid item xs={3}>
+                        <Button target="_blank" rel="noreferrer" 
+                                className={activityType} 
+                                href={`https://${activityType}.report/pgcr/` + game['activityDetails']['instanceId']}>
+                            {activityType === 'grandmaster' ? 'GM' : activityType}.report
+                        </Button>
+                    </Grid>
                 </Grid>
             ))}
         </div>
