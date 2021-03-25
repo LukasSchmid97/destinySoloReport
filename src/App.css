@@ -1,6 +1,18 @@
 html {
   text-align: center;
-}s
+}
+
+.item.profile img {
+  padding-left: auto;
+  padding-right: auto;
+}
+
+.item.profile {
+  padding-left: 44%;
+  padding-right: 44%;
+  width: 12%;
+  margin-bottom: 10px;
+}
 
 
 @media (prefers-color-scheme: dark) {
@@ -65,12 +77,6 @@ html[data-theme='dark'] {
   max-width: 80%;
 }
 
-@media only screen and (max-width: 600px) {
-  .MuiAccordion-root {
-    min-width:80%;
-  }
-}
-
 .MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column{
   flex-wrap: nowrap;
 }
@@ -93,7 +99,10 @@ a.dungeon {
 
 a.grandmaster {
   background-color: #617279fb;
-  margin-left: -50%;
+}
+
+p.hidden-mobile {
+  margin-block: 3px;
 }
 
 .MuiGrid-root.MuiGrid-container div .MuiGrid-container.flawless{
@@ -106,8 +115,45 @@ a.grandmaster {
   color: #61dafb;
 }
 
-@media (max-width: 767px) {
+@media only screen and (max-width: 600px) {
+
+  .item.profile {
+    padding: 0;
+    width: 100%;
+  }
+
+  .item.profile img {
+    height: 0.8em;
+    margin-right: 7px;
+  }
+
+  .MuiAccordionDetails-root .MuiGrid-root div .MuiGrid-container {
+    flex-direction: column;
+  }
+
+  .MuiAccordion-root {
+    max-width: 70%;
+  }
+
+  .MuiGrid-root.MuiGrid-item label{
+    margin-left: 5px;
+  }
+
+  .entryValue {
+    display: contents;
+  }
+
+  .item.profile div {
+    display: contents;
+    margin-right: 5px;
+  }
+
+  .MuiGrid-container .MuiGrid-item {
+    max-width: 100%;
+    margin-bottom: 5px;
+  }
+
   .hidden-mobile {
-    display: none;
+    display: None;
   }
 }
