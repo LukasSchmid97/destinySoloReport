@@ -9,7 +9,7 @@ ReactDOM.render(
   <React.StrictMode>
     <base href="%PUBLIC_URL%/"/>
     <Router>
-      <App />
+      <App/>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

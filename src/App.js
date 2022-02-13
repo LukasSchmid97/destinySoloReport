@@ -92,7 +92,13 @@ function App() {
       ).then(
         data => {
           let memberships = data['Response']['destinyMemberships']
-          let main = memberships.find(membership => membership['membershipId'] === data['Response']['primaryMembershipId'])
+          let main = null
+          if(memberships.length === 1){
+            main = memberships[0] //if not crosssave
+          }else{
+            //find primary account
+            main = memberships.find(membership => membership['membershipId'] === data['Response']['primaryMembershipId'])
+          }
           let cookie = from_cookie(document.cookie)
           let newVals = { 
             'name': main['displayName'],

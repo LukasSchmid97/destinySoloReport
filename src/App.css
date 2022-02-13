@@ -143,6 +143,10 @@ p.hidden-mobile {
     display: contents;
   }
 
+  .MuiButton-root {
+    margin-right: 5px;
+  }
+
   .item.profile div {
     display: contents;
     margin-right: 5px;
